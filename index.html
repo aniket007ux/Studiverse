@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+
+<body>
+  <!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>StudiVerse AI - Smart Study & Focus Companion</title>
+  <style>
+    :root[data-theme="dark"] {
+      --bg-main: #0b0f19;
+      --bg-card: #151c2c;
+      --bg-card-alt: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --accent-2: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: rgba(255, 255, 255, 0.08);
+      --nav-bg: rgba(21, 28, 44, 0.95);
+    }
+
+    :root[data-theme="light"] {
+      --bg-main: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-card-alt: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --accent: #4f46e5;
+      --accent-glow: rgba(79, 70, 229, 0.25);
+      --accent-2: #0891b2;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --border: rgba(15, 23, 42, 0.1);
+      --nav-bg: rgba(255, 255, 255, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 92px;
+      overflow-x: hidden;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .app-shell {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 14px 16px;
+    }
+
+    /* Top Status Pill */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      margin-bottom: 14px;
+      font-size: 0.78rem;
+    }
+
+    .studibits-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    /* Views */
+    .view-section {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Greeting Banner */
+    .greeting-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(6, 182, 212, 0.12));
+      border: 1px solid var(--accent-glow);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    .greeting-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .greeting-sub {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      min-height: 2.3em;
+    }
+
+    .event-alert-chip {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      background: rgba(245, 158, 11, 0.16);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    /* Circular Progress Ring */
+    .progress-hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 14px;
+      padding: 10px 4px;
+    }
+
+    .ring-container {
+      position: relative;
+      width: 132px;
+      height: 132px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ring-svg {
+      transform: rotate(-90deg);
+      width: 132px;
+      height: 132px;
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: var(--bg-card-alt);
+      stroke-width: 11;
+    }
+
+    .ring-fill {
+      fill: none;
+      stroke: url(#ringGrad);
+      stroke-width: 11;
+      stroke-linecap: round;
+      stroke-dasharray: 339.292;
+      stroke-dashoffset: 111.96;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .ring-Center {
+      position: absolute;
+      text-align: center;
+    }
+
+    .ring-hours {
+      font-size: 1.05rem;
+      font-weight: 800;
+      display: block;
+    }
+
+    .ring-pct {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-2);
+    }
+
+    .progress-stats {
+      flex: 1;
+    }
+
+    .stat-row {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .stat-row strong {
+      color: var(--text-main);
+    }
+
+    /* Task Checklist */
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 12px;
+      background: var(--bg-card-alt);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.2s;
+    }
+
+    .task-item.done {
+      opacity: 0.68;
+      border-color: var(--success);
+    }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--success);
+      cursor: pointer;
+    }
+
+    .task-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .task-item.done .task-title {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .task-badge {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.18);
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* Primary & CTA Buttons */
+    .btn-primary {
+      width: 100%;
+      padding: 13px 18px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px var(--accent-glow);
+      margin-bottom: 14px;
+      transition: transform 0.15s;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-card-alt);
+      color: var(--text-main);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Input controls */
+    .input-field, .textarea-field, select {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-card-alt);
+      color: var(--text-main);
+      font-size: 0.9rem;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .input-field:focus, .textarea-field:focus {
+      border-color: var(--accent);
+    }
+
+    /* Video Knowledge Cards */
+    .video-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .video-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      background: var(--bg-card-alt);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .video-thumb {
+      width: 78px;
+      height: 54px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #312e81, #0e7490);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .video-info h4 {
+      font-size: 0.88rem;
+      margin-bottom: 3px;
+    }
+
+    .video-info p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* AI Quiz Box */
+    .quiz-box {
+      background: var(--bg-card-alt);
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      margin-top: 8px;
+    }
+
+    .quiz-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      margin-top: 7px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+
+    .quiz-option.correct {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--success);
+      font-weight: 700;
+    }
+
+    .quiz-option.wrong {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: var(--danger);
+    }
+
+    /* Schedule Calendar Split Layout */
+    .calendar-split {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .cal-grid-header, .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      gap: 3px;
+    }
+
+    .cal-grid-header span {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding-bottom: 4px;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.76rem;
+      border-radius: 7px;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+    }
+
+    .cal-day:hover {
+      background: var(--bg-card-alt);
+    }
+
+    .cal-day.today {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .cal-day.has-exam {
+      border: 1.5px solid var(--warning);
+      font-weight: 700;
+      color: var(--warning);
+    }
+
+    .cal-day.has-festival {
+      border: 1.5px dashed var(--accent-2);
+    }
+
+    .events-side {
+      background: var(--bg-card-alt);
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      max-height: 215px;
+      overflow-y: auto;
+    }
+
+    .side-event-item {
+      padding: 7px 8px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      margin-bottom: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      border-left: 3px solid var(--warning);
+    }
+
+    .side-event-item.festival {
+      border-left-color: var(--accent-2);
+    }
+
+    .countdown-banner {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(99, 102, 241, 0.14);
+      border: 1px solid var(--accent-glow);
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Timer Interface */
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--bg-card-alt);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .mode-tab {
+      padding: 9px;
+      text-align: center;
+      font-size: 0.84rem;
+      font-weight: 700;
+      border-radius: 9px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .mode-tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .timer-display-box {
+      text-align: center;
+      padding: 24px 10px;
+    }
+
+    .timer-digits {
+      font-size: 3.4rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .play-circle {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 6px 18px var(--accent-glow);
+    }
+
+    /* Profile Interface */
+    .profile-header {
+      display: flex;
+      align-items: center;
+       justify-content: space-between;
+      gap: 12px;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #fff;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .avatar-edit-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 0.72rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 12px;
+      background: var(--bg-card-alt);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .badge-item {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 6px;
+      text-align: center;
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+
+    .badge-item.locked {
+      opacity: 0.4;
+      filter: grayscale(1);
+    }
+
+    .badge-icon {
+      font-size: 1.4rem;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* Bottom Navigation + Floating Plus Button */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      padding: 8px 6px 12px;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+    }
+
+    .nav-icon {
+      font-size: 1.25rem;
+    }
+
+    .fab-add {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      border: none;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: -22px auto 0;
+      box-shadow: 0 6px 18px var(--accent-glow);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 200;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 420px;
+      padding: 18px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    /* Weekly Analytics Chart */
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 95px;
+      padding-top: 12px;
+      gap: 8px;
+    }
+
+    .chart-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chart-bar {
+      width: 100%;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      border-radius: 6px 6px 0 0;
+      min-height: 6px;
+    }
+
+    .chart-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- Top Status Bar -->
+  <div class="top-bar">
+    <span id="liveClockText">📅 Loading time...</span>
+    <span class="studibits-pill">⚡ <span id="topStudibits">300</span> Studibits</span>
+  </div>
+
+  <!-- ================= 1. HOME INTERFACE ================= -->
+  <section id="view-home" class="view-section active">
+    <!-- Dynamic Greeting & Motivational Quote Banner -->
+    <div class="greeting-box">
+      <div class="greeting-title" id="greetingHeader">Good Morning, Scholar!</div>
+      <div class="greeting-sub" id="motivationalQuote">
+        "Success is the sum of small efforts, repeated day in and day out."
+      </div>
+      <div class="event-alert-chip" id="homeEventAlert">
+        🔔 Upcoming: PT-2 Test (Tap Schedule for countdown)
+      </div>
+    </div>
+
+    <!-- Track Your Progress Circular Gauge -->
+    <div class="card">
+      <div class="section-title">
+        <span>Track Your Progress</span>
+        <span style="font-size:0.76rem; color:var(--accent-2);" id="rankMiniBadge">Scholar Lvl-2</span>
+      </div>
+      <div class="progress-hero">
+        <div class="ring-container">
+          <svg class="ring-svg" viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#06b6d4" />
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="60" cy="60" r="54"></circle>
+            <circle class="ring-fill" id="progressRingCircle" cx="60" cy="60" r="54"></circle>
+          </svg>
+          <div class="ring-Center">
+            <span class="ring-hours" id="ringHoursText">4.5h/6h</span>
+            <span class="ring-pct" id="ringPctText">67% DONE</span>
+          </div>
+        </div>
+        <div class="progress-stats">
+          <div class="stat-row"><span>Tasks Done</span><strong id="homeTasksStat">2 / 4</strong></div>
+          <div class="stat-row"><span>Daily Target</span><strong>6.0 Hours</strong></div>
+          <div class="stat-row"><span>Streak</span><strong>🔥 5 Days</strong></div>
+          <button class="btn-secondary" style="width:100%; margin-top:4px;" onclick="rotateQuote()">
+            🔄 Next Quote
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Today's Tasks -->
+    <div class="card">
+      <div class="section-title">
+        <span>Today's Tasks</span>
+        <span style="font-size:0.75rem; color:var(--text-muted);">Tap to complete (+25 pts)</span>
+      </div>
+      <div class="task-list" id="homeTaskList"></div>
+    </div>
+
+    <!-- Start Focus Mode CTA -->
+    <button class="btn-primary" onclick="launchFocusQuick()">
+      🚀 Start Focus Mode (60Hz Sound)
+    </button>
+
+    <!-- Scrolled Down Section: Watch For Your Knowledge -->
+    <div class="card">
+      <div class="section-title">
+        <span>🎬 Watch For Your Knowledge</span>
+      </div>
+      <input
+        type="text"
+        id="topicInput"
+        class="input-field"
+        placeholder="Write your Topic (e.g., Photosynthesis, Algebra, Light)..."
+        oninput="updateTopicContent()"
+      />
+      <div class="video-list" id="videoCardList"></div>
+    </div>
+
+    <!-- Scrolled Down Section: Generate AI Quiz -->
+    <div class="card">
+      <div class="section-title">
+        <span>🧠 AI Topic Quiz Generator</span>
+        <button class="btn-secondary" onclick="generateAIQuiz()">✨ Generate AI Quiz</button>
+      </div>
+      <div id="quizContainer" class="quiz-box">
+        <p style="font-size:0.85rem; color:var(--text-muted);">
+          Enter a topic above and tap <strong>Generate AI Quiz</strong> to test your knowledge and earn +30 Studibits!
+        </p>
+      </div>
+    </div>
+
+    <!-- Scrolled Down Further: AI Answer Writing Skill Improver -->
+    <div class="card">
+      <div class="section-title">
+        <span>✍️ Check & Improve Answer Writing</span>
+      </div>
+      <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:8px;">
+        Write your practice exam answer below. Our AI evaluator checks key terms, structure, and upgrades it to a full-marks topper answer.
+      </p>
+      <textarea
+        id="studentAnswerInput"
+        class="textarea-field"
+        rows="4"
+        placeholder="Write your answer on the topic here..."
+      ></textarea>
+      <button class="btn-primary" style="margin-bottom:8px;" onclick="evaluateAnswerWriting()">
+        🔍 Check, Correct & Improve Answer
+      </button>
+      <div id="answerFeedbackBox" style="display:none;" class="quiz-box"></div>
+    </div>
+  </section>
+
+  <!-- ================= 2. SCHEDULE INTERFACE ================= -->
+  <section id="view-schedule" class="view-section">
+    <div class="card">
+      <div class="section-title">
+        <span>🗓️ Plan Your Day...</span>
+        <span style="font-size:0.78rem; color:var(--accent-2);">November 2026</span>
+      </div>
+
+      <div class="calendar-split">
+        <!-- Interactive Calendar Grid -->
+        <div>
+          <div class="cal-grid-header">
+            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+          </div>
+          <div class="cal-grid" id="calendarGrid"></div>
+        </div>
+
+        <!-- Side Important Tests & Festivals List -->
+        <div class="events-side" id="calendarSideEvents"></div>
+      </div>
+
+      <!-- Interactive Countdown Banner -->
+      <div class="countdown-banner" id="eventCountdownBanner">
+        <span>⏳ Tap any test or date to see days remaining</span>
+      </div>
+    </div>
+
+    <!-- Your Schedule Today -->
+    <div class="card">
+      <div class="section-title">
+        <span>Your Schedule Today</span>
+        <span style="font-size:0.74rem; color:var(--success);">Adds hours & points</span>
+      </div>
+      <div class="task-list" id="scheduleTaskList"></div>
+    </div>
+
+    <!-- Spaced Repetition Revision Booster (Contest Bonus Feature) -->
+    <div class="card">
+      <div class="section-title">
+        <span>🧬 Spaced Repetition Memory Tracker</span>
+      </div>
+      <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:8px;">
+        Scientific 1-3-7 day recall schedule so you never forget chapters before PT-2 or Finals:
+      </p>
+      <div class="task-list">
+        <div class="task-item">
+          <div class="task-left">
+            <span>📘 <strong>Math:</strong> Linear Equations</span>
+          </div>
+          <span class="task-badge">Due Today (Day 3)</span>
+        </div>
+        <div class="task-item">
+          <div class="task-left">
+            <span>🌍 <strong>SST:</strong> Resources & Development</span>
+          </div>
+          <span class="task-badge">In 2 Days (Day 7)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. TIMER INTERFACE ================= -->
+  <section id="view-timer" class="view-section">
+    <div class="card">
+      <!-- Mode Selector Tabs -->
+      <div class="mode-tabs">
+        <div class="mode-tab active" id="tab-stopwatch" onclick="switchTimerMode('stopwatch')">Stopwatch</div>
+        <div class="mode-tab" id="tab-timer" onclick="switchTimerMode('timer')">Timer</div>
+        <div class="mode-tab" id="tab-focus" onclick="switchTimerMode('focus')">Focus</div>
+      </div>
+
+      <!-- Custom Duration Picker (Shown in Timer/Focus modes) -->
+      <div id="timerDurationPicker" style="display:none; text-align:center; margin-bottom:8px;">
+        <label style="font-size:0.8rem; color:var(--text-muted);">Set Study Minutes: </label>
+        <input
+          type="number"
+          id="customMinutesInput"
+          value="25"
+          min="1"
+          max="180"
+          style="width:70px; padding:5px 8px; border-radius:8px; border:1px solid var(--border); background:var(--bg-card-alt); color:var(--text-main); text-align:center;"
+          onchange="updateCustomTimerMinutes()"
+        />
+      </div>
+
+      <!-- Large Time Display -->
+      <div class="timer-display-box">
+        <div class="timer-digits" id="timerDisplay">0:00s</div>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:6px;" id="timerStatusSub">
+          Stopwatch Mode Ready
+        </p>
+
+        <div class="timer-controls">
+          <button class="play-circle" id="timerPlayBtn" onclick="toggleTimerRun()">▶</button>
+          <button class="btn-secondary" onclick="resetTimerClock()">RESET</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Focus Music (60Hz Generator + MP3 Upload) -->
+    <div class="card">
+      <div class="section-title">
+        <span>🎧 Focus Music (60Hz Brainwave + MP3)</span>
+        <button class="btn-secondary" id="focusMusicToggleBtn" onclick="toggleFocusMusic()">
+          ▶ Play 60Hz
+        </button>
+      </div>
+      <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">
+        In Focus Mode, the 60Hz ambient neural concentration wave turns on automatically, or upload your own MP3 study track below.
+      </p>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <label class="btn-secondary" style="text-align:center; display:block;">
+          📂 Upload MP3 File
+          <input type="file" id="mp3UploadInput" accept="audio/*" style="display:none;" onchange="handleMP3Upload(event)" />
+        </label>
+        <audio id="customAudioPlayer" controls style="width:100%; display:none; margin-top:6px;"></audio>
+        <span id="uploadedFileName" style="font-size:0.75rem; color:var(--accent-2);"></span>
+      </div>
+    </div>
+
+    <!-- Quick Designated Study Session Launcher -->
+    <div class="card">
+      <div class="section-title">
+        <span>⚡ Designated Study Session</span>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <button class="btn-secondary" onclick="startDesignatedSession(25)">🍅 25m Pomodoro + 60Hz</button>
+        <button class="btn-secondary" onclick="startDesignatedSession(45)">🔥 45m Deep Work + 60Hz</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 4. PROFILE INTERFACE ================= -->
+  <section id="view-profile" class="view-section">
+    <div class="card">
+      <div class="profile-header">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="avatar-wrap" onclick="changeAvatarEmoji()" title="Tap to change avatar">
+            <span id="profileAvatarEmoji">🎓</span>
+            <span class="avatar-edit-badge">✏️</span>
+          </div>
+          <div>
+            <div style="font-size:0.78rem; color:var(--text-muted);" id="profileHelloText">Hello Scholar...</div>
+            <h2 style="font-size:1.2rem; font-weight:800;" id="profileUsername">Aniket</h2>
+            <span class="task-badge" id="profileClassBadge">Class - 8</span>
+          </div>
+        </div>
+        <button class="btn-secondary" onclick="openModal('settingsModal')" title="Settings">
+          ⚙️ Settings
+        </button>
+      </div>
+    </div>
+
+    <!-- This Week Progress Report -->
+    <div class="card">
+      <div class="section-title">
+        <span>This Week Progress Report</span>
+        <span id="weeklyHoursLabel" style="font-size:0.84rem; color:var(--accent-2);">27h / 54h (50%)</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="weeklyBarFill" style="width: 50%;"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-top:10px;">
+        <span>🏆 Rank: <strong id="profileRankText" style="color:var(--warning);">Scholar lvl-2</strong></span>
+        <span>⚡ Score: <strong id="profileScoreText" style="color:var(--accent-2);">300 Studibits</strong></span>
+      </div>
+
+      <!-- 7-Day Visual Study Bar Chart -->
+      <div class="chart-bars" id="weeklyChartBars"></div>
+    </div>
+
+    <!-- Badges Section -->
+    <div class="card">
+      <div class="section-title">
+        <span>🎖️ Badges</span>
+        <button class="btn-secondary" onclick="toggleMoreBadges()" id="seeMoreBadgesBtn">See More</button>
+      </div>
+      <div class="badges-grid" id="badgesGrid"></div>
+    </div>
+
+    <!-- Login Info, Clear Cache & Sign Out -->
+    <div class="card">
+      <div class="section-title"><span>🔐 Login Info & System</span></div>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;" id="loginInfoText">
+        Account ID: STU-2026-X8 • Status: Active Offline Sync • Cache: 18.4 KB
+      </p>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-secondary" style="flex:1;" onclick="clearAppCache()">🧹 Clear Cache</button>
+        <button class="btn-secondary" style="flex:1; color:var(--danger);" onclick="switchOrSignOutAccount()">🚪 Sign Out</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= FLOATING ADD MODAL (+) ================= -->
+<div class="modal-backdrop" id="addModal">
+  <div class="modal-card">
+    <div class="section-title">
+      <span>➕ Add New Task or Exam Event</span>
+      <button class="btn-secondary" onclick="closeModal('addModal')">✖</button>
+    </div>
+    <label style="font-size:0.8rem; color:var(--text-muted);">Category</label>
+    <select id="newItemType">
+      <option value="homeTask">Today's Task (Home Checklist)</option>
+      <option value="scheduleTask">Timed Schedule Session (+Hours)</option>
+      <option value="examEvent">Calendar Exam / Event (November)</option>
+    </select>
+
+    <label style="font-size:0.8rem; color:var(--text-muted);">Title / Description</label>
+    <input type="text" id="newItemTitle" class="input-field" placeholder="e.g., Science Sample Paper / Physics Test" />
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <div>
+        <label style="font-size:0.78rem; color:var(--text-muted);">Hours (for Schedule)</label>
+        <input type="number" id="newItemHours" class="input-field" value="1" step="0.5" min="0.5" max="6" />
+      </div>
+      <div>
+        <label style="font-size:0.78rem; color:var(--text-muted);">Date (Day 1-30)</label>
+        <input type="number" id="newItemDate" class="input-field" value="25" min="1" max="30" />
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveNewItem()">✅ Save to App</button>
+  </div>
+</div>
+
+<!-- ================= SETTINGS MODAL ================= -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal-card">
+    <div class="section-title">
+      <span>⚙️ Settings</span>
+      <button class="btn-secondary" onclick="closeModal('settingsModal')">✖</button>
+    </div>
+
+    <div class="settings-row">
+      <span>🌗 Theme (Light / Dark)</span>
+      <button class="btn-secondary" id="themeToggleBtn" onclick="toggleTheme()">Dark Mode</button>
+    </div>
+
+    <div class="settings-row">
+      <span>🔔 Notification</span>
+      <input type="checkbox" id="notifToggle" checked onchange="toggleNotifications()" style="width:20px; height:20px;" />
+    </div>
+
+    <div class="settings-row">
+      <span>🏫 Change Class (1 - 12)</span>
+      <select id="classSelectDropdown" style="width:95px; margin:0;" onchange="changeUserClass(this.value)">
+        <option value="1">Class 1</option>
+        <option value="2">Class 2</option>
+        <option value="3">Class 3</option>
+        <option value="4">Class 4</option>
+        <option value="5">Class 5</option>
+        <option value="6">Class 6</option>
+        <option value="7">Class 7</option>
+        <option value="8" selected>Class 8</option>
+        <option value="9">Class 9</option>
+        <option value="10">Class 10</option>
+        <option value="11">Class 11</option>
+        <option value="12">Class 12</option>
+      </select>
+    </div>
+
+    <div class="settings-row">
+      <span>👤 Change Profile Name</span>
+      <button class="btn-secondary" onclick="promptChangeProfileName()">Edit Name</button>
+    </div>
+
+    <div class="settings-row">
+      <span>🔄 Switch Account</span>
+      <button class="btn-secondary" onclick="switchOrSignOutAccount()">Switch</button>
+    </div>
+
+    <div class="settings-row">
+      <span>🗑️ Clear Data</span>
+      <button class="btn-secondary" style="color:var(--danger);" onclick="resetAllAppData()">Reset All</button>
+    </div>
+
+    <div style="margin-top:12px;">
+      <button class="btn-primary" style="background:var(--danger);" onclick="switchOrSignOutAccount()">
+        🚪 Log Out
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= BOTTOM NAVIGATION BAR ================= -->
+<nav class="bottom-nav">
+  <button class="nav-item active" id="nav-home" onclick="switchView('home')">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </button>
+  <button class="nav-item" id="nav-schedule" onclick="switchView('schedule')">
+    <span class="nav-icon">📅</span>
+    <span>Schedule</span>
+  </button>
+  <button class="fab-add" onclick="openModal('addModal')" title="Add Task or Event">+</button>
+  <button class="nav-item" id="nav-timer" onclick="switchView('timer')">
+    <span class="nav-icon">⏱️</span>
+    <span>Timer</span>
+  </button>
+  <button class="nav-item" id="nav-profile" onclick="switchView('profile')">
+    <span class="nav-icon">👤</span>
+    <span>Profile</span>
+  </button>
+</nav>
+
+<script>
+  // ==================== STATE & DEFAULT DATA ====================
+  const defaultState = {
+    username: "Scholar",
+    userClass: "8",
+    avatar: "🎓",
+    studibits: 300,
+    dailyHoursDone: 4.0,
+    dailyHoursTarget: 6.0,
+    weeklyHoursDone: 27.0,
+    weeklyHoursTarget: 54.0,
+    theme: "dark",
+    notifications: true,
+    showAllBadges: false,
+    homeTasks: [
+      { id: 1, title: "Quiz of Topic/Subject", done: true, pts: 25 },
+      { id: 2, title: "Question on Topic/Subject", done: true, pts: 25 },
+      { id: 3, title: "Sample Paper Practice", done: false, pts: 30 },
+      { id: 4, title: "Video on Selected Topic", done: false, pts: 20 }
+    ],
+    scheduleTasks: [
+      { id: 101, title: "SST and Math Session (+2 hrs)", hours: 2.0, done: true, pts: 40 },
+      { id: 102, title: "Diary completion (+1 hrs)", hours: 1.0, done: true, pts: 20 },
+      { id: 103, title: "Break (walking on garden) 30m", hours: 0.5, done: true, pts: 10 },
+      { id: 104, title: "Revise Session (+1.5 hrs)", hours: 1.5, done: false, pts: 30 },
+      { id: 105, title: "Tuition (+1.5 hrs)", hours: 1.5, done: false, pts: 30 }
+    ],
+    calendarEvents: [
+      { day: 14, title: "Children's Day (Festival)", type: "festival" },
+      { day: 15, title: "Guru Nanak Jayanti", type: "festival" },
+      { day: 18, title: "PT-2 Test", type: "exam" },
+      { day: 21, title: "MATH Class Test", type: "exam" },
+      { day: 22, title: "SST Ch-3 Test", type: "exam" }
+    ],
+    weeklyDailyHours: [3.5, 4.5, 4.0, 5.0, 3.5, 2.5, 4.0]
+  };
+
+  let appState = JSON.parse(localStorage.getItem("studiverse_state")) || defaultState;
+
+  function saveState() {
+    localStorage.setItem("studiverse_state", JSON.stringify(appState));
+  }
+
+  // ==================== QUOTES & GREETING ENGINE ====================
+  const quotes = [
+    "\"Success is the sum of small efforts, repeated day in and day out.\"",
+    "\"Discipline is choosing between what you want now and what you want most.\"",
+    "\"Don't watch the clock; do what it does. Keep going!\"",
+    "\"The expert in anything was once a beginner. Stay focused!\"",
+    "\"Push yourself, because no one else is going to do it for you.\""
+  ];
+  let quoteIdx = 0;
+
+  function updateGreetingAndClock() {
+    const now = new Date();
+    const hr = now.getHours();
+    let greet = "Good Morning";
+    if (hr >= 12 && hr < 17) greet = "Good Afternoon";
+    else if (hr >= 17) greet = "Good Evening";
+
+    document.getElementById("greetingHeader").textContent = `${greet}, ${appState.username}!`;
+    document.getElementById("liveClockText").textContent =
+      `🕒 ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Class ${appState.userClass}`;
+
+    // Show nearest upcoming exam in header alert chip
+    const todayDate = now.getDate();
+    const upcoming = appState.calendarEvents
+      .filter(e => e.type === "exam" && e.day >= todayDate)
+      .sort((a, b) => a.day - b.day)[0] || appState.calendarEvents[0];
+
+    if (upcoming) {
+      const diff = upcoming.day - todayDate;
+      const diffLabel = diff >= 0 ? `${diff} days left` : `Day ${upcoming.day}`;
+      document.getElementById("homeEventAlert").textContent =
+        `🔔 Upcoming Event: ${upcoming.day} Nov - ${upcoming.title} (${diffLabel})`;
+    }
+  }
+
+  function rotateQuote() {
+    quoteIdx = (quoteIdx + 1) % quotes.length;
+    document.getElementById("motivationalQuote").textContent = quotes[quoteIdx];
+  }
+
+  // ==================== NAVIGATION ====================
+  function switchView(viewName) {
+    document.querySelectorAll(".view-section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+
+    document.getElementById(`view-${viewName}`).classList.add("active");
+    const navBtn = document.getElementById(`nav-${viewName}`);
+    if (navBtn) navBtn.classList.add("active");
+  }
+
+  // ==================== HOME PROGRESS & TASKS ====================
+  function renderHome() {
+    updateGreetingAndClock();
+    document.getElementById("topStudibits").textContent = appState.studibits;
+
+    // Calculate progress percentage
+    const pct = Math.min(100, Math.round((appState.dailyHoursDone / appState.dailyHoursTarget) * 100));
+    const circumference = 339.292;
+    const offset = circumference - (pct / 100) * circumference;
+
+    document.getElementById("progressRingCircle").style.strokeDashoffset = offset;
+    document.getElementById("ringHoursText").textContent =
+      `${appState.dailyHoursDone.toFixed(1)}h/${appState.dailyHoursTarget}h`;
+    document.getElementById("ringPctText").textContent = `${pct}% DONE`;
+
+    const doneCount = appState.homeTasks.filter(t => t.done).length;
+    document.getElementById("homeTasksStat").textContent = `${doneCount} / ${appState.homeTasks.length}`;
+
+    // Render Today's Tasks checklist
+    const listEl = document.getElementById("homeTaskList");
+    listEl.innerHTML = "";
+    appState.homeTasks.forEach(task => {
+      const item = document.createElement("div");
+      item.className = `task-item ${task.done ? "done" : ""}`;
+      item.onclick = () => toggleHomeTask(task.id);
+      item.innerHTML = `
+        <div class="task-left">
+          <input type="checkbox" class="task-checkbox" ${task.done ? "checked" : ""} onclick="event.stopPropagation(); toggleHomeTask(${task.id})" />
+          <span class="task-title">${task.title}</span>
+        </div>
+        <span class="task-badge">+${task.pts} pts</span>
+      `;
+      listEl.appendChild(item);
+    });
+  }
+
+  function toggleHomeTask(id) {
+    const task = appState.homeTasks.find(t => t.id === id);
+    if (!task) return;
+    task.done = !task.done;
+    if (task.done) {
+      appState.studibits += task.pts;
+      appState.dailyHoursDone = Math.min(appState.dailyHoursTarget, appState.dailyHoursDone + 0.5);
+      appState.weeklyHoursDone = Math.min(appState.weeklyHoursTarget, appState.weeklyHoursDone + 0.5);
+    } else {
+      appState.studibits = Math.max(0, appState.studibits - task.pts);
+      appState.dailyHoursDone = Math.max(0, appState.dailyHoursDone - 0.5);
+      appState.weeklyHoursDone = Math.max(0, appState.weeklyHoursDone - 0.5);
+    }
+    saveState();
+    renderAll();
+  }
+
+  // ==================== TOPIC VIDEOS, AI QUIZ & ANSWER IMPROVER ====================
+  function updateTopicContent() {
+    const rawTopic = document.getElementById("topicInput").value.trim() || "Your Selected Topic";
+    const videoList = document.getElementById("videoCardList");
+
+    const lessons = [
+      {
+        title: `Concept Masterclass: ${rawTopic}`,
+        sub: `Class ${appState.userClass} NCERT & Olympiad Visual Breakdown • 12:40`,
+        mode: "Fundamentals"
+      },
+      {
+        title: `Top 10 Exam Questions on ${rawTopic}`,
+        sub: `Step-by-step board & district level problem solving • 18:15`,
+        mode: "Exam Prep"
+      },
+      {
+        title: `One-Shot Rapid Revision: ${rawTopic}`,
+        sub: `Mind-map, formulas & memory tricks • 09:50`,
+        mode: "Quick Recap"
+      }
+    ];
+
+    videoList.innerHTML = lessons.map((v, idx) => `
+      <div class="video-card" onclick="playSimulatedVideo('${rawTopic.replace(/'/g, "")}', '${v.mode}')">
+        <div class="video-thumb">▶</div>
+        <div class="video-info">
+          <h4>${v.title}</h4>
+          <p>${v.sub}</p>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function playSimulatedVideo(topic, mode) {
+    alert(`🎬 Playing "${mode}" Video Lesson on: ${topic}\n\n(+15 Studibits awarded for active video learning!)`);
+    appState.studibits += 15;
+    saveState();
+    renderAll();
+  }
+
+  function generateAIQuiz() {
+    const topic = document.getElementById("topicInput").value.trim() || "General Science & Math";
+    const quizBox = document.getElementById("quizContainer");
+
+    const questionBank = [
+      {
+        q: `Q1. In the context of "${topic}" (Class ${appState.userClass}), which strategy ensures maximum conceptual retention and exam accuracy?`,
+        options: [
+          "Applying core principles, unit verification, and structured diagrams",
+          "Memorizing without understanding definitions",
+          "Skipping numerical derivations entirely",
+          "Writing unformatted single-word points"
+        ],
+        correct: 0,
+        explain: "Correct! District and board examiners reward principle-based steps, units, and labeled diagrams."
+      },
+      {
+        q: `Q2. Which scientific law or analytical method is most directly tested in "${topic}" application problems?`,
+        options: [
+          "Conservation & proportional cause-effect relationships",
+          "Random trial-and-error guessing",
+          "Ignoring boundary conditions",
+          "None of the above"
+        ],
+        correct: 0,
+        explain: "Spot on! Cause-effect proportionality and conservation laws form the backbone of high-level questions."
+      }
+    ];
+
+    const pick = questionBank[Math.floor(Math.random() * questionBank.length)];
+
+    quizBox.innerHTML = `
+      <div style="font-weight:700; font-size:0.9rem; margin-bottom:8px;">${pick.q}</div>
+      ${pick.options.map((opt, i) => `
+        <button class="quiz-option" onclick="checkQuizOption(this, ${i === pick.correct}, '${pick.explain.replace(/'/g, "\\'")}')">
+          ${String.fromCharCode(65 + i)}. ${opt}
+        </button>
+      `).join("")}
+      <div id="quizResultMsg" style="margin-top:8px; font-size:0.8rem; font-weight:600;"></div>
+    `;
+  }
+
+  function checkQuizOption(btn, isCorrect, explain) {
+    const parent = btn.parentElement;
+    parent.querySelectorAll(".quiz-option").forEach(b => b.disabled = true);
+    const msg = document.getElementById("quizResultMsg");
+
+    if (isCorrect) {
+      btn.classList.add("correct");
+      msg.style.color = "var(--success)";
+      msg.textContent = `✅ ${explain} (+30 Studibits!)`;
+      appState.studibits += 30;
+      saveState();
+      renderAll();
+    } else {
+      btn.classList.add("wrong");
+      msg.style.color = "var(--danger)";
+      msg.textContent = `❌ Not quite! ${explain}`;
+    }
+  }
+
+  function evaluateAnswerWriting() {
+    const topic = document.getElementById("topicInput").value.trim() || "this topic";
+    const ans = document.getElementById("studentAnswerInput").value.trim();
+    const out = document.getElementById("answerFeedbackBox");
+    out.style.display = "block";
+
+    if (ans.length < 15) {
+      out.innerHTML = `<span style="color:var(--warning);">⚠️ Please write at least 1-2 complete sentences so the AI evaluator can grade your answer structure.</span>`;
+      return;
+    }
+
+    const words = ans.split(/\s+/).length;
+    const hasKeywords = /because|therefore|defined|process|example|formula|function|result/i.test(ans);
+    const score = Math.min(5, (words >= 20 ? 3 : 2) + (hasKeywords ? 2 : 1));
+
+    out.innerHTML = `
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+        <strong>📊 AI Evaluation Score: ${score} / 5 Marks</strong>
+        <span style="color:var(--success); font-weight:700;">+20 Studibits</span>
+      </div>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;">
+        • <strong>Word Count:</strong> ${words} words (${words < 25 ? "Add 1-2 more supporting points" : "Ideal length"})<br/>
+        • <strong>Connector Terms:</strong> ${hasKeywords ? "Good analytical flow detected" : "Include connectors like 'therefore', 'for example', or 'consequently'"}
+      </p>
+      <div style="background:var(--bg-card); padding:10px; border-radius:8px; font-size:0.8rem; border-left:3px solid var(--accent-2);">
+        <strong>✨ AI Topper Model Upgrade (${topic}):</strong><br/>
+        "<strong>Definition:</strong> ${ans.charAt(0).toUpperCase() + ans.slice(1)}<br/>
+        <strong>Key Mechanism / Point:</strong> Furthermore, this principle operates systematically under standard conditions.<br/>
+        <strong>Conclusion / Application:</strong> Therefore, mastering ${topic} is essential for solving practical real-world applications."
+      </div>
+    `;
+    appState.studibits += 20;
+    saveState();
+    renderAll();
+  }
+
+  // ==================== SCHEDULE & INTERACTIVE CALENDAR ====================
+  function renderSchedule() {
+    const calGrid = document.getElementById("calendarGrid");
+    calGrid.innerHTML = "";
+    const today = new Date().getDate();
+
+    for (let d = 1; d <= 30; d++) {
+      const ev = appState.calendarEvents.find(e => e.day === d);
+      const cell = document.createElement("div");
+      cell.className = "cal-day";
+      if (d === today) cell.classList.add("today");
+      if (ev && ev.type === "exam") cell.classList.add("has-exam");
+      if (ev && ev.type === "festival") cell.classList.add("has-festival");
+      cell.textContent = d;
+      cell.onclick = () => showDayCountdown(d);
+      calGrid.appendChild(cell);
+    }
+
+    // Render Side Events List
+    const sideEl = document.getElementById("calendarSideEvents");
+    sideEl.innerHTML = appState.calendarEvents
+      .sort((a, b) => a.day - b.day)
+      .map(ev => `
+        <div class="side-event-item ${ev.type === "festival" ? "festival" : ""}" onclick="showDayCountdown(${ev.day})">
+          <strong>${ev.day} Nov:</strong> ${ev.title}
+        </div>
+      `).join("");
+
+    // Render Schedule Tasks
+    const sList = document.getElementById("scheduleTaskList");
+    sList.innerHTML = "";
+    appState.scheduleTasks.forEach(item => {
+      const row = document.createElement("div");
+      row.className = `task-item ${item.done ? "done" : ""}`;
+      row.onclick = () => toggleScheduleTask(item.id);
+      row.innerHTML = `
+        <div class="task-left">
+          <input type="checkbox" class="task-checkbox" ${item.done ? "checked" : ""} onclick="event.stopPropagation(); toggleScheduleTask(${item.id})" />
+          <span class="task-title">${item.title}</span>
+        </div>
+        <span class="task-badge">+${item.pts} pts</span>
+      `;
+      sList.appendChild(row);
+    });
+  }
+
+  function showDayCountdown(dayNum) {
+    const today = new Date().getDate();
+    const diff = dayNum - today;
+    const ev = appState.calendarEvents.find(e => e.day === dayNum);
+    const label = ev ? ev.title : `Selected Date (Nov ${dayNum})`;
+    const status = diff > 0
+      ? `⏳ <strong>${diff} day(s) left</strong> until ${label}!`
+      : diff === 0
+      ? `🚨 <strong>Today</strong> is ${label}!`
+      : `✅ ${label} was ${Math.abs(diff)} day(s) ago.`;
+
+    document.getElementById("eventCountdownBanner").innerHTML = `<span>${status}</span>`;
+  }
+
+  function toggleScheduleTask(id) {
+    const item = appState.scheduleTasks.find(t => t.id === id);
+    if (!item) return;
+    item.done = !item.done;
+    if (item.done) {
+      appState.studibits += item.pts;
+      appState.dailyHoursDone = Math.min(appState.dailyHoursTarget, appState.dailyHoursDone + item.hours);
+      appState.weeklyHoursDone = Math.min(appState.weeklyHoursTarget, appState.weeklyHoursDone + item.hours);
+    } else {
+      appState.studibits = Math.max(0, appState.studibits - item.pts);
+      appState.dailyHoursDone = Math.max(0, appState.dailyHoursDone - item.hours);
+      appState.weeklyHoursDone = Math.max(0, appState.weeklyHoursDone - item.hours);
+    }
+    saveState();
+    renderAll();
+  }
+
+  // ==================== TIMER & 60HZ WEB AUDIO ENGINE ====================
+  let timerMode = "stopwatch"; // 'stopwatch' | 'timer' | 'focus'
+  let timerRunning = false;
+  let timerSeconds = 0;
+  let timerInterval = null;
+
+  // Web Audio API 60Hz neural sound generator
+  let audioCtx = null;
+  let osc60Hz = null;
+  let gainNode = null;
+  let isFocusMusicPlaying = false;
+
+  function switchTimerMode(mode) {
+    pauseTimerClock();
+    timerMode = mode;
+    document.querySelectorAll(".mode-tab").forEach(t => t.classList.remove("active"));
+    document.getElementById(`tab-${mode}`).classList.add("active");
+
+    const picker = document.getElementById("timerDurationPicker");
+    if (mode === "stopwatch") {
+      picker.style.display = "none";
+      timerSeconds = 0;
+      document.getElementById("timerStatusSub").textContent = "Stopwatch Mode Ready";
+    } else {
+      picker.style.display = "block";
+      const mins = parseInt(document.getElementById("customMinutesInput").value) || 25;
+      timerSeconds = mins * 60;
+      document.getElementById("timerStatusSub").textContent =
+        mode === "focus" ? "Focus Mode (Auto 60Hz Sound Enabled)" : "Countdown Timer Ready";
+      if (mode === "focus" && !isFocusMusicPlaying) {
+        toggleFocusMusic(true);
+      }
+    }
+    updateTimerDisplay();
+  }
+
+  function updateCustomTimerMinutes() {
+    if (timerMode !== "stopwatch") {
+      const mins = Math.max(1, parseInt(document.getElementById("customMinutesInput").value) || 25);
+      timerSeconds = mins * 60;
+      updateTimerDisplay();
+    }
+  }
+
+  function updateTimerDisplay() {
+    const mins = Math.floor(timerSeconds / 60);
+    const secs = timerSeconds % 60;
+    document.getElementById("timerDisplay").textContent =
+      `${mins}:${secs < 10 ? "0" : ""}${secs}s`;
+  }
+
+  function toggleTimerRun() {
+    if (timerRunning) {
+      pauseTimerClock();
+    } else {
+      timerRunning = true;
+      document.getElementById("timerPlayBtn").textContent = "⏸";
+      if (timerMode === "focus" && !isFocusMusicPlaying) {
+        toggleFocusMusic(true);
+      }
+      timerInterval = setInterval(() => {
+        if (timerMode === "stopwatch") {
+          timerSeconds++;
+        } else {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+          } else {
+            pauseTimerClock();
+            appState.studibits += 50;
+            saveState();
+            renderAll();
+            alert("🎉 Study Session Complete! You earned +50 Studibits!");
+          }
+        }
+        updateTimerDisplay();
+      }, 1000);
+    }
+  }
+
+  function pauseTimerClock() {
+    timerRunning = false;
+    clearInterval(timerInterval);
+    document.getElementById("timerPlayBtn").textContent = "▶";
+  }
+
+  function resetTimerClock() {
+    pauseTimerClock();
+    if (timerMode === "stopwatch") {
+      timerSeconds = 0;
+    } else {
+      const mins = parseInt(document.getElementById("customMinutesInput").value) || 25;
+      timerSeconds = mins * 60;
+    }
+    updateTimerDisplay();
+  }
+
+  function toggleFocusMusic(forceOn = false) {
+    const btn = document.getElementById("focusMusicToggleBtn");
+    if (isFocusMusicPlaying && !forceOn) {
+      if (osc60Hz) {
+        osc60Hz.stop();
+        osc60Hz.disconnect();
+        osc60Hz = null;
+      }
+      isFocusMusicPlaying = false;
+      btn.textContent = "▶ Play 60Hz";
+      return;
+    }
+
+    if (!isFocusMusicPlaying) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!audioCtx) audioCtx = new AudioContextClass();
+      osc60Hz = audioCtx.createOscillator();
+      gainNode = audioCtx.createGain();
+
+      osc60Hz.type = "sine";
+      osc60Hz.frequency.setValueAtTime(60, audioCtx.currentTime); // Authentic 60Hz Focus Frequency
+      gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+
+      osc60Hz.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      osc60Hz.start();
+
+      isFocusMusicPlaying = true;
+      btn.textContent = "⏹ Stop 60Hz";
+    }
+  }
+
+  function handleMP3Upload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const player = document.getElementById("customAudioPlayer");
+    player.src = url;
+    player.style.display = "block";
+    player.play();
+    document.getElementById("uploadedFileName").textContent = `🎵 Playing Local Track: ${file.name}`;
+  }
+
+  function startDesignatedSession(mins) {
+    document.getElementById("customMinutesInput").value = mins;
+    switchTimerMode("focus");
+    toggleTimerRun();
+  }
+
+  function launchFocusQuick() {
+    switchView("timer");
+    startDesignatedSession(25);
+  }
+
+  // ==================== PROFILE & BADGES ====================
+  const allBadges = [
+    { name: "First Step", icon: "🌱", req: 100 },
+    { name: "Writer", icon: "✍️", req: 200 },
+    { name: "Flash", icon: "⚡", req: 250 },
+    { name: "On Time", icon: "⏰", req: 300 },
+    { name: "Quiz Pro", icon: "🧠", req: 350 },
+    { name: "60Hz Zen", icon: "🎧", req: 400 },
+    { name: "Topper", icon: "👑", req: 500 },
+    { name: "Olympiad", icon: "🚀", req: 600 }
+  ];
+
+  function getRankTitle(pts) {
+    if (pts >= 500) return "Grandmaster lvl-5";
+    if (pts >= 400) return "Scholar lvl-4";
+    if (pts >= 350) return "Scholar lvl-3";
+    if (pts >= 250) return "Scholar lvl-2";
+    return "Scholar lvl-1";
+  }
+
+  function renderProfile() {
+    document.getElementById("profileAvatarEmoji").textContent = appState.avatar;
+    document.getElementById("profileHelloText").textContent = `Hello ${appState.username}...`;
+    document.getElementById("profileUsername").textContent = appState.username;
+    document.getElementById("profileClassBadge").textContent = `Class - ${appState.userClass}`;
+    document.getElementById("classSelectDropdown").value = appState.userClass;
+
+    const wkPct = Math.min(100, Math.round((appState.weeklyHoursDone / appState.weeklyHoursTarget) * 100));
+    document.getElementById("weeklyHoursLabel").textContent =
+      `${appState.weeklyHoursDone.toFixed(1)}h / ${appState.weeklyHoursTarget}h (${wkPct}%)`;
+    document.getElementById("weeklyBarFill").style.width = `${wkPct}%`;
+
+    const rank = getRankTitle(appState.studibits);
+    document.getElementById("profileRankText").textContent = rank;
+    document.getElementById("rankMiniBadge").textContent = rank;
+    document.getElementById("profileScoreText").textContent = `${appState.studibits} Studibits`;
+
+    // Render 7-Day Study Analytics Chart
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const chartEl = document.getElementById("weeklyChartBars");
+    chartEl.innerHTML = appState.weeklyDailyHours.map((h, i) => {
+      const heightPct = Math.min(100, Math.round((h / 6) * 100));
+      return `
+        <div class="chart-col">
+          <div class="chart-bar" style="height:${heightPct}px;" title="${h} hrs"></div>
+          <span class="chart-label">${days[i]}</span>
+        </div>
+      `;
+    }).join("");
+
+    // Render Badges
+    const visibleBadges = appState.showAllBadges ? allBadges : allBadges.slice(0, 4);
+    document.getElementById("badgesGrid").innerHTML = visibleBadges.map(b => {
+      const unlocked = appState.studibits >= b.req;
+      return `
+        <div class="badge-item ${unlocked ? "" : "locked"}">
+          <span class="badge-icon">${b.icon}</span>
+          <span>${b.name}</span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function toggleMoreBadges() {
+    appState.showAllBadges = !appState.showAllBadges;
+    document.getElementById("seeMoreBadgesBtn").textContent =
+      appState.showAllBadges ? "Show Less" : "See More";
+    renderProfile();
+  }
+
+  function changeAvatarEmoji() {
+    const emojis = ["🎓", "🚀", "⚡", "🦁", "🏆", "🔬", "💻"];
+    const next = emojis[(emojis.indexOf(appState.avatar) + 1) % emojis.length];
+    appState.avatar = next;
+    saveState();
+    renderProfile();
+  }
+
+  // ==================== MODALS & SETTINGS ACTIONS ====================
+  function openModal(id) {
+    document.getElementById(id).classList.add("open");
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove("open");
+  }
+
+  function saveNewItem() {
+    const type = document.getElementById("newItemType").value;
+    const title = document.getElementById("newItemTitle").value.trim();
+    const hours = parseFloat(document.getElementById("newItemHours").value) || 1.0;
+    const day = Math.min(30, Math.max(1, parseInt(document.getElementById("newItemDate").value) || 25));
+
+    if (!title) {
+      alert("Please enter a title!");
+      return;
+    }
+
+    if (type === "homeTask") {
+      appState.homeTasks.push({ id: Date.now(), title, done: false, pts: 25 });
+    } else if (type === "scheduleTask") {
+      appState.scheduleTasks.push({
+        id: Date.now(),
+        title: `${title} (+${hours} hrs)`,
+        hours,
+        done: false,
+        pts: Math.round(hours * 20)
+      });
+    } else if (type === "examEvent") {
+      appState.calendarEvents.push({ day, title, type: "exam" });
+    }
+
+    document.getElementById("newItemTitle").value = "";
+    saveState();
+    renderAll();
+    closeModal("addModal");
+  }
+
+  function toggleTheme() {
+    appState.theme = appState.theme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", appState.theme);
+    document.getElementById("themeToggleBtn").textContent =
+      appState.theme === "dark" ? "Dark Mode" : "Light Mode";
+    saveState();
+  }
+
+  function toggleNotifications() {
+    appState.notifications = document.getElementById("notifToggle").checked;
+    saveState();
+  }
+
+  function changeUserClass(val) {
+    appState.userClass = val;
+    saveState();
+    renderAll();
+  }
+
+  function promptChangeProfileName() {
+    const name = prompt("Enter your Username:", appState.username);
+    if (name && name.trim()) {
+      appState.username = name.trim();
+      saveState();
+      renderAll();
+    }
+  }
+
+  function clearAppCache() {
+    document.getElementById("loginInfoText").textContent =
+      "Account ID: STU-2026-X8 • Status: Cache Cleared (0.0 KB) ✅";
+    alert("🧹 Temporary cache cleared successfully! Your progress and Studibits are safe.");
+  }
+
+  function switchOrSignOutAccount() {
+    const newUser = prompt("Switch Account — Enter Username for session:", "Scholar_2");
+    if (newUser && newUser.trim()) {
+      appState.username = newUser.trim();
+      saveState();
+      renderAll();
+      closeModal("settingsModal");
+    }
+  }
+
+  function resetAllAppData() {
+    if (confirm("Reset all tasks, schedule events, and Studibits back to default?")) {
+      localStorage.removeItem("studiverse_state");
+      appState = JSON.parse(JSON.stringify(defaultState));
+      renderAll();
+      closeModal("settingsModal");
+    }
+  }
+
+  function renderAll() {
+    document.documentElement.setAttribute("data-theme", appState.theme);
+    renderHome();
+    renderSchedule();
+    renderProfile();
+  }
+
+  // Initialize App on Load
+  window.addEventListener("DOMContentLoaded", () => {
+    renderAll();
+    updateTopicContent();
+    setInterval(updateGreetingAndClock, 30000);
+  });
+</script>
+</body>
+</html>
+</body>
+
+</html>
